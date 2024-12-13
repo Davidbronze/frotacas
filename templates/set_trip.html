@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+	
+{% if user.is_authenticated %}
+<div class=" container-fluid text-center border border-primary">
+    <div class="row row-cols-2">
+      <div class="col border-primary"><h3>Usuário: {{ user.username }}</h3></div>
+      <div class="col"><h3>Veículo: {{selected_veiculo.veiculo_nome}}</h3></div>
+
+      <div class="col"><h4><label for="sel1" class="form-label">Selecionar veículo:</label></h4></div>
+      <div class="col">
+          <form action="{% url 'set_trip' %}">
+            
+            <div class="dropdown">             
+                <select class="form-select" id="sel1" name="veiculo_nome">
+                {% for veiculo in veiculos %}
+                <h4><option>{{ veiculo.veiculo_nome }}</option></h4>
+                {% endfor %}
+              </select>              
+            </div>
+            <input type="submit" value="Selecionar">
+          </form>
+          </div>
+      </div>  
+</div>
+
+<div class=" container-fluid  border border-primary">
+  <br>
+    <div class="row">         
+        <div class="col">Último usuário: </div>
+        <div class="col">{{selected_trip.usuario}}</div>
+        <div class="col">Último destino: </div>
+        <div class="col"> {{selected_trip.viagem_destino}}</div>
+    </div>
+    <div class="row">         
+        <div class="col">Data da saída: </div>
+        <div class="col"> {{selected_trip.viagem_datasaida}}</div>
+        <div class="col">Km na saída: </div>
+        <div class="col"> {{selected_trip.viagem_kmsaida}}</div>
+    </div>
+    <div class="row">         
+        <div class="col">Data da chegada: </div>
+        <div class="col"> {{selected_trip.viagem_dataret}}</div>
+        <div class="col">Km na chegada: </div>
+        <div class="col"> {{selected_trip.viagem_kmret}}</div>
+    </div>
+    <div class="row">         
+        <div class="col">Nível de combustível</div>
+        <div class="col">
+          <div class="progress" style="height:20px">
+            <div class="progress-bar bg-secondary" style="width:{{combustivel.veiculo_combust}}%">{{combustivel.veiculo_combust}} %</div>
+          </div>
+        </div>
+        
+        <div class="col"></div>
+        <div class="col"></div>
+        
+    </div>
+ <br>
+ 
+</div>
+<div class=" container-fluid text-center border border-primary">
+  <br>
+  <form method="post" class="row g-3" action="{% url 'save_trip' %}">
+      {% csrf_token %}
+        <br>
+        	<input type="hidden" id="veiculo" name="veiculo" value="{{selected_veiculo.id}}">
+        	<input type="hidden" id="user" name="user" value="{{user.id}}">
+        <div class="row">         
+          <div class="col">
+            <div class="input-group flex-nowrap">
+              <span class="input-group-text" id="addon-wrapping">Destino</span>
+              <input type="text" class="form-control" placeholder="destino da viagem" aria-label="Username" aria-describedby="addon-wrapping" id="destino" name="destino">
+            </div>
+          </div>
+        </div>         
+
+        <div class="row">         
+          <div class="col">
+            <div class="input-group flex-nowrap">
+              <span class="input-group-text" id="addon-wrapping">Data da saída</span>
+              <input type="datetime-local" class="form-control" aria-label="Username" aria-describedby="addon-wrapping" id="start_date" name="start_date">
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group flex-nowrap">
+            <span class="input-group-text" id="addon-wrapping">Km na saída</span>
+            <input type="number" class="form-control" placeholder="km" aria-label="Last name" id="start_km" name="start_km">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">         
+          <div class="col">
+            <div class="input-group flex-nowrap">
+              <span class="input-group-text" id="addon-wrapping">Data da chegada</span>
+              <input type="datetime-local" class="form-control" aria-label="Username" aria-describedby="addon-wrapping" id="end_date" name="end_date">
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group flex-nowrap">
+            <span class="input-group-text" id="addon-wrapping">Km na chegada</span>
+            <input type="number" class="form-control" placeholder="km" aria-label="Last name" id="end_km" name="end_km">
+          </div>
+        </div>
+      </div>
+
+        <div class="row">
+
+          <div class="col">
+            <div class="input-group flex-nowrap">
+              <span class="input-group-text" id="addon-wrapping">Nível do combustível</span>
+              <input type="range" name="combustivel" min="1" max="100"  aria-label="Username" aria-describedby="addon-wrapping" id="combustivel" >
+            </div>
+          </div>
+          
+        </div>
+
+
+       <br>   
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+        <script></script>
+  </form> 
+</div>
+
+<form class="row g-3" action="{% url 'logout' %}" method="post">
+  {% csrf_token %}
+  <div class="col-12">
+      <button type="submit" class="btn btn-primary">  S a i r  </button>
+  </div>
+</form>
+{% else %}
+<p>Selecione uma opção</p>
+
+<form method="post" class="row g-3" action="{% url 'login' %}">
+  {% csrf_token %}
+  <div class="col-12">
+      <button type="submit" class="btn btn-primary">Entrar</button>
+  </div>
+</form>
+<br>
+<form class="row g-3" method="get" action="{% url 'signup' %}">
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Primeiro acesso?</button>
+</div>
+</form>
+
+
+
+
+{% endif %}
+
+{% if interval.days < 50 %}
+
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myModalLabel">ALERTA DE REVISÃO!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Este veículo deve passar por revisão a cada {{selected_veiculo.veiculo_revinterval}} meses. A data expira em {{ interval.days }} dias. Comunique a chefia imediata.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function(){
+		var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+		myModal.show();
+	})
+</script>
+
+
+
+{% endif %}
+
+
+{% endblock %}
+
+
+
+

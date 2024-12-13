@@ -1,0 +1,151 @@
+
+{% extends "base.html" %}
+
+{% block title %}FrotaCAS{% endblock %}
+
+
+{% block content %}
+
+
+{% if user.is_authenticated %}
+<div class=" container-fluid text-center border border-primary">
+    <div class="row">
+      <div class="col"><h3>Usuário: {{ user.username }}</h3></div>
+      <div class="col"><h3>nenhum veículo selecionado</h3></div>
+
+      <div class="col"><h3><label for="sel1" class="form-label">Selecionar veículo:</label></h3></div>
+    <div class="col">
+          <form action="{% url 'set_trip' %}">
+            
+            <div class="dropdown">            
+                <select class="form-select" id="sel1" name="veiculo_nome">
+                {% for veiculo in object_list %}
+                <h4><option>{{ veiculo.veiculo_nome }}</option></h4>
+                {% endfor %}
+              </select>              
+            </div>
+            <input type="submit" value="Selecionar">
+          </form>
+          </div>
+    </div>  
+</div>
+
+<div class=" container-fluid  border border-primary">
+  <br>
+    <div class="row">         
+        <div class="col">Último usuário</div>
+        <div class="col">Último destino</div>
+    </div>
+    <div class="row">         
+        <div class="col">Data da saída</div>
+        <div class="col">Km na saída</div>
+    </div>
+    <div class="row">         
+        <div class="col">Data da chegada</div>
+        <div class="col">Km na chegada</div>
+    </div>
+    <div class="row">         
+        <div class="col">Nível de combustível</div>
+        <div class="col">
+          <div class="progress" style="height:20px">
+            <div class="progress-bar bg-secondary" style="width:90%"></div>
+          </div>
+        </div>
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col"></div>
+        
+    </div>
+ <br>
+</div>
+<div class=" container-fluid text-center border border-primary">
+  <br>
+  <form method="post" class="row g-3" action="">
+      {% csrf_token %}
+        <br>
+
+        <div class="row">         
+          <div class="col">
+            <div class="input-group flex-nowrap">
+              <span class="input-group-text" id="addon-wrapping">Destino</span>
+              <input type="text" class="form-control" placeholder="destino da viagem" aria-label="Username" aria-describedby="addon-wrapping">
+            </div>
+          </div>
+        </div>         
+
+        <div class="row">         
+          <div class="col">
+            <div class="input-group flex-nowrap">
+              <span class="input-group-text" id="addon-wrapping">Data da saída</span>
+              <input type="date" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group flex-nowrap">
+            <span class="input-group-text" id="addon-wrapping">Km na saída</span>
+            <input type="number" class="form-control" placeholder="km" aria-label="Last name">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">         
+          <div class="col">
+            <div class="input-group flex-nowrap">
+              <span class="input-group-text" id="addon-wrapping">Data da chegada</span>
+              <input type="date" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group flex-nowrap">
+            <span class="input-group-text" id="addon-wrapping">Km na chegada</span>
+            <input type="number" class="form-control" placeholder="km" aria-label="Last name">
+          </div>
+        </div>
+      </div>
+
+        <div class="row">
+
+          <div class="col">
+            <div class="input-group flex-nowrap">
+              <span class="input-group-text" id="addon-wrapping">Nível do combustível</span>
+              <input type="range" name="combustivel" min="1" max="100"  aria-label="Username" aria-describedby="addon-wrapping">
+            </div>
+          </div>
+          
+        </div>
+
+
+       <br>   
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+  </form> 
+</div>
+
+<form class="row g-3" action="{% url 'logout' %}" method="post">
+  {% csrf_token %}
+  <div class="col-12">
+      <button type="submit" class="btn btn-primary">  S a i r  </button>
+  </div>
+</form>
+{% else %}
+<p>Selecione uma opção</p>
+
+<form method="post" class="row g-3" action="{% url 'login' %}">
+  {% csrf_token %}
+  <div class="col-12">
+      <button type="submit" class="btn btn-primary">Entrar</button>
+  </div>
+</form>
+<br>
+<form class="row g-3" method="get" action="{% url 'signup' %}">
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Primeiro acesso?</button>
+</div>
+</form>
+
+
+{% endif %}
+
+
+{% endblock %}
